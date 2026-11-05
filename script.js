@@ -55,49 +55,80 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   const typedRole = document.getElementById("typed-role");
-  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const reduceMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
+  const langHooks = [];
+  let lang = "en";
 
-  if (typedRole && !reduceMotion) {
-    const roles = [
-      "Full Stack Developer",
-      "Laravel Developer",
-      "Vue.js Developer",
-      "TypeScript Enthusiast",
-    ];
-    let roleIndex = 0;
-    let charIndex = roles[0].length;
-    let deleting = true;
+  const roles = [
+    "Junior Full Stack Developer",
+    "Laravel Developer",
+    "Vue.js Developer",
+    "TypeScript Enthusiast",
+  ];
+  const khmerRole = "អ្នកអភិវឌ្ឍន៍ Full Stack (Junior)";
+  let roleIndex = 0;
+  let charIndex = roles[0].length;
+  let deleting = true;
+  let typingTimer = null;
 
-    function typeLoop() {
-      const word = roles[roleIndex];
-
-      if (deleting) {
-        charIndex--;
-      } else {
-        charIndex++;
-      }
-
-      typedRole.textContent = word.slice(0, charIndex);
-
-      let delay = deleting ? 45 : 85;
-
-      if (!deleting && charIndex === word.length) {
-        delay = 1800;
-        deleting = true;
-      } else if (deleting && charIndex === 0) {
-        deleting = false;
-        roleIndex = (roleIndex + 1) % roles.length;
-        delay = 350;
-      }
-
-      setTimeout(typeLoop, delay);
+  function typeLoop() {
+    if (lang !== "en") {
+      return;
     }
 
-    setTimeout(typeLoop, 2200);
+    const word = roles[roleIndex];
+
+    if (deleting) {
+      charIndex--;
+    } else {
+      charIndex++;
+    }
+
+    typedRole.textContent = word.slice(0, charIndex);
+
+    let delay = deleting ? 45 : 85;
+
+    if (!deleting && charIndex === word.length) {
+      delay = 1800;
+      deleting = true;
+    } else if (deleting && charIndex === 0) {
+      deleting = false;
+      roleIndex = (roleIndex + 1) % roles.length;
+      delay = 350;
+    }
+
+    typingTimer = setTimeout(typeLoop, delay);
+  }
+
+  function startTyping() {
+    clearTimeout(typingTimer);
+    roleIndex = 0;
+    charIndex = roles[0].length;
+    deleting = true;
+
+    if (!typedRole) {
+      return;
+    }
+
+    typedRole.textContent = roles[0];
+
+    if (!reduceMotion) {
+      typingTimer = setTimeout(typeLoop, 2200);
+    }
+  }
+
+  function stopTyping(text) {
+    clearTimeout(typingTimer);
+
+    if (typedRole) {
+      typedRole.textContent = text;
+    }
   }
 
   const revealTargets = document.querySelectorAll(
-    ".about-text, .about-detail, .section-header, .skill-card, .project-card, .contact-container"
+    ".about-text, .about-detail, .section-header, .skill-card, .project-card, .slider, .contact-container",
   );
 
   if ("IntersectionObserver" in window && !reduceMotion) {
@@ -110,7 +141,7 @@ document.addEventListener("DOMContentLoaded", function () {
           }
         });
       },
-      { threshold: 0.15 }
+      { threshold: 0.15 },
     );
 
     revealTargets.forEach(function (el, i) {
@@ -146,11 +177,736 @@ document.addEventListener("DOMContentLoaded", function () {
     navItems.forEach(function (link) {
       link.classList.toggle(
         "active",
-        link.getAttribute("href") === "#" + currentSection
+        link.getAttribute("href") === "#" + currentSection,
       );
     });
   }
 
   window.addEventListener("scroll", updateActiveLink, { passive: true });
   updateActiveLink();
+
+  const modalData = {
+    schools: {
+      title: "Schools using the School ERP System",
+      titleKm: "សាលាដែលប្រើប្រព័ន្ធ ERP សម្រាប់សាលា",
+      sub: function (n) {
+        return "Built with the TechStore team for " + n + " schools.";
+      },
+      subKm: function (n) {
+        return "បង្កើតជាមួយក្រុម TechStore សម្រាប់សាលាចំនួន " + n + "។";
+      },
+      items: [
+        { name: "Spring Education", short: "SE", logo: "spring-education.png" },
+        {
+          name: "True Vision International School",
+          short: "TV",
+          logo: "true-vision.png",
+        },
+        {
+          name: "Koh Kong International School (KKIS)",
+          short: "KK",
+          logo: "kkis.png",
+        },
+        { name: "Northstar", short: "NS", logo: "northstar.png" },
+        {
+          name: "Pannasastra International School (PSIS4)",
+          short: "PS",
+          logo: "psis.png",
+        },
+        { name: "Berkeley International School", short: "BI", logo: "elt.png" },
+        { name: "BTI University", short: "BTI", logo: "bti.png" },
+        { name: "ASEAN School", short: "AS", logo: "asean.png" },
+        { name: "IDEA School", short: "ID", logo: "idea.png" },
+        {
+          name: "Brightstar International School of Phnom Penh (BISPP)",
+          short: "BR",
+          logo: "bispp.png",
+        },
+        { name: "NIS School", short: "NIS", logo: "nis.png" },
+        { name: "USA IS Battambang", short: "USA", logo: "usa-battambang.png" },
+        {
+          name: "Starlink International Academy",
+          short: "SI",
+          logo: "starlink.png",
+        },
+      ],
+    },
+    loans: {
+      title: "Loan management systems",
+      titleKm: "ប្រព័ន្ធគ្រប់គ្រងកម្ចី",
+      sub: function (n) {
+        return n + " loan systems I’ve worked on at TechStore.";
+      },
+      subKm: function (n) {
+        return "ប្រព័ន្ធកម្ចីចំនួន " + n + " ដែលខ្ញុំបានធ្វើនៅ TechStore។";
+      },
+      items: [
+        {
+          name: "RPRU",
+          short: "RPRU",
+          note: "Daily loan",
+          noteKm: "កម្ចីប្រចាំថ្ងៃ",
+          logo: "assets/images/rpru.png",
+        },
+        {
+          name: "RPRU Pawn Shop",
+          short: "PS",
+          logo: "assets/images/rpru-pawn-shop.png",
+        },
+        {
+          name: "RPRU Finance PLC",
+          short: "RF",
+          logo: "assets/images/rpru-finance.png",
+        },
+      ],
+    },
+    pos: {
+      title: "Projects built on the POS system",
+      titleKm: "គម្រោងដែលបង្កើតលើប្រព័ន្ធ POS",
+      sub: function (n) {
+        return (
+          n + " point of sale and business systems I’ve worked on at TechStore."
+        );
+      },
+      subKm: function (n) {
+        return (
+          "ប្រព័ន្ធលក់ និងប្រព័ន្ធអាជីវកម្មចំនួន " +
+          n +
+          " ដែលខ្ញុំបានធ្វើនៅ TechStore។"
+        );
+      },
+      items: [
+        { name: "TVS-BLS" },
+        { name: "MSK Kubota" },
+        { name: "VKP POS" },
+        {
+          name: "Apsor",
+          note: "Steam sauna management",
+          noteKm: "ប្រព័ន្ធគ្រប់គ្រងសាឡុងចំហាយ",
+        },
+        { name: "Tec Pro POS" },
+        { name: "Manchinery World" },
+        { name: "RK POS", note: "Relax Restaurant" },
+        {
+          name: "SKP POS",
+          note: "Vehicle spare parts",
+          noteKm: "គ្រឿងបន្លាស់យានយន្ត",
+        },
+        { name: "RFCD" },
+        { name: "Sopheak Food" },
+        { name: "VINCA" },
+        { name: "Khan Vannak" },
+        { name: "SP Cafe" },
+        { name: "Meta Shop" },
+        { name: "MSK Cambodia" },
+        { name: "SCT" },
+        { name: "Cloud POS" },
+      ],
+    },
+  };
+
+  const projectModal = document.getElementById("project-modal");
+  const modalGrid = document.getElementById("modal-grid");
+  const modalTitle = document.getElementById("modal-title");
+  const modalSub = document.getElementById("modal-sub");
+  const modalClose = document.getElementById("modal-close");
+  let lastFocused = null;
+  let openKey = null;
+
+  function initialsOf(name) {
+    const words = name.split(/[\s-]+/).filter(Boolean);
+    if (words.length > 1) {
+      return (words[0][0] + words[1][0]).toUpperCase();
+    }
+    return name.slice(0, 2).toUpperCase();
+  }
+
+  function renderModal(key) {
+    const data = modalData[key];
+    if (!data) {
+      return false;
+    }
+
+    modalTitle.textContent =
+      lang === "km" && data.titleKm ? data.titleKm : data.title;
+    modalSub.textContent = (
+      lang === "km" && data.subKm ? data.subKm : data.sub
+    )(data.items.length);
+    modalGrid.textContent = "";
+
+    data.items.forEach(function (item) {
+      const card = document.createElement("div");
+      card.className = "school-card";
+
+      const logoBox = document.createElement("div");
+      logoBox.className = "school-logo";
+      logoBox.textContent = item.short || initialsOf(item.name);
+
+      if (item.logo) {
+        const img = document.createElement("img");
+        img.src =
+          item.logo.indexOf("/") === -1
+            ? "assets/schools/" + item.logo
+            : item.logo;
+        img.alt = item.name + " logo";
+        img.loading = "lazy";
+        img.addEventListener("error", function () {
+          img.remove();
+        });
+        logoBox.appendChild(img);
+      }
+
+      const title = document.createElement("h4");
+      title.textContent = item.name;
+
+      card.appendChild(logoBox);
+      card.appendChild(title);
+
+      if (item.note) {
+        const note = document.createElement("p");
+        note.textContent =
+          lang === "km" && item.noteKm ? item.noteKm : item.note;
+        card.appendChild(note);
+      }
+
+      modalGrid.appendChild(card);
+    });
+
+    return true;
+  }
+
+  if (projectModal && modalGrid) {
+    function openModal(key) {
+      if (!renderModal(key)) {
+        return;
+      }
+      lastFocused = document.activeElement;
+      openKey = key;
+      projectModal.classList.add("open");
+      projectModal.setAttribute("aria-hidden", "false");
+      document.body.classList.add("modal-open");
+      projectModal.querySelector(".modal-panel").scrollTop = 0;
+      if (modalClose) {
+        modalClose.focus();
+      }
+    }
+
+    function closeModal() {
+      projectModal.classList.remove("open");
+      projectModal.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("modal-open");
+      openKey = null;
+      if (lastFocused) {
+        lastFocused.focus();
+      }
+    }
+
+    langHooks.push(function () {
+      if (openKey) {
+        renderModal(openKey);
+      }
+    });
+
+    document.querySelectorAll("[data-open-modal]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        openModal(btn.getAttribute("data-open-modal"));
+      });
+    });
+
+    if (modalClose) {
+      modalClose.addEventListener("click", closeModal);
+    }
+
+    projectModal.addEventListener("click", function (event) {
+      if (event.target === projectModal) {
+        closeModal();
+      }
+    });
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape" && projectModal.classList.contains("open")) {
+        closeModal();
+      }
+    });
+  }
+
+  const sliderEl = document.getElementById("slider");
+  const sliderTrack = document.getElementById("slider-track");
+
+  if (sliderEl && sliderTrack) {
+    const viewport = sliderEl.querySelector(".slider-viewport");
+    const sliderCount = document.getElementById("slider-count");
+    const sliderBar = document.getElementById("slider-bar");
+    const sliderToggle = document.getElementById("slider-toggle");
+    const sliderPrev = document.getElementById("slider-prev");
+    const sliderNext = document.getElementById("slider-next");
+
+    const items = [
+      {
+        src: "assets/images/trip.png",
+        caption: "Team trip",
+        captionKm: "ដំណើរកម្សាន្តក្រុម",
+      },
+      {
+        src: "assets/images/festival.png",
+        caption: "Festival",
+        captionKm: "ពិធីបុណ្យ",
+      },
+      { src: "assets/images/idk.png" },
+      { src: "assets/images/photo_2025-05-28_20-58-07.png" },
+    ];
+
+    for (let n = 1; n <= 25; n++) {
+      items.push({
+        src: "assets/images/photo_" + n + "_2026-11-04_20-09-57.jpg",
+      });
+    }
+
+    const SLIDE_MS = 5500;
+    const slides = [];
+    let current = 0;
+    let timer = null;
+    let userPaused = reduceMotion;
+    let hovering = false;
+    let focusedInside = false;
+    let inView = true;
+    let startX = null;
+
+    function pad(n) {
+      return String(n).padStart(2, "0");
+    }
+
+    items.forEach(function (item, i) {
+      const el = document.createElement("div");
+      el.className = "slide";
+      el.setAttribute("role", "group");
+      el.setAttribute("aria-roledescription", "slide");
+      el.setAttribute("aria-label", i + 1 + " of " + items.length);
+
+      const bg = document.createElement("div");
+      bg.className = "slide-bg";
+
+      const img = document.createElement("img");
+      img.className = "slide-img";
+      img.alt = item.caption || "TechStore team photo";
+      img.loading = "lazy";
+      img.decoding = "async";
+      img.draggable = false;
+
+      img.addEventListener("load", function () {
+        bg.style.backgroundImage = 'url("' + item.src + '")';
+      });
+
+      img.addEventListener("error", function () {
+        el.classList.add("broken");
+      });
+
+      el.appendChild(bg);
+      el.appendChild(img);
+
+      let captionEl = null;
+
+      if (item.caption) {
+        captionEl = document.createElement("span");
+        captionEl.className = "slide-caption";
+        captionEl.textContent = item.caption;
+        el.appendChild(captionEl);
+      }
+
+      sliderTrack.appendChild(el);
+      slides.push({
+        el: el,
+        img: img,
+        loaded: false,
+        captionEl: captionEl,
+        item: item,
+      });
+    });
+
+    langHooks.push(function () {
+      slides.forEach(function (slide) {
+        if (slide.captionEl) {
+          slide.captionEl.textContent =
+            lang === "km" && slide.item.captionKm
+              ? slide.item.captionKm
+              : slide.item.caption;
+        }
+      });
+    });
+
+    function loadSlide(i) {
+      const slide = slides[i];
+      if (!slide || slide.loaded) {
+        return;
+      }
+      slide.loaded = true;
+      slide.img.src = items[i].src;
+    }
+
+    function stopTimer() {
+      clearTimeout(timer);
+      timer = null;
+      sliderBar.style.animation = "none";
+      sliderBar.style.width = "0";
+    }
+
+    function startTimer() {
+      stopTimer();
+      void sliderBar.offsetWidth;
+      sliderBar.style.animation =
+        "sliderProgress " + SLIDE_MS + "ms linear forwards";
+      timer = setTimeout(function () {
+        show(current + 1);
+      }, SLIDE_MS);
+    }
+
+    function refresh() {
+      sliderEl.classList.toggle("paused", userPaused);
+      sliderToggle.setAttribute(
+        "aria-label",
+        userPaused ? "Play slideshow" : "Pause slideshow",
+      );
+
+      if (
+        !userPaused &&
+        !hovering &&
+        !focusedInside &&
+        inView &&
+        !document.hidden
+      ) {
+        startTimer();
+      } else {
+        stopTimer();
+      }
+    }
+
+    function show(index) {
+      current = (index + items.length) % items.length;
+
+      slides.forEach(function (slide, i) {
+        slide.el.classList.toggle("active", i === current);
+        slide.el.setAttribute("aria-hidden", String(i !== current));
+      });
+
+      loadSlide(current);
+      loadSlide((current + 1) % items.length);
+      loadSlide((current - 1 + items.length) % items.length);
+
+      sliderCount.textContent = pad(current + 1) + " / " + pad(items.length);
+      refresh();
+    }
+
+    sliderPrev.addEventListener("click", function () {
+      show(current - 1);
+    });
+
+    sliderNext.addEventListener("click", function () {
+      show(current + 1);
+    });
+
+    sliderToggle.addEventListener("click", function () {
+      userPaused = !userPaused;
+      refresh();
+    });
+
+    sliderEl.addEventListener("keydown", function (event) {
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
+        show(current + 1);
+      } else if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        show(current - 1);
+      }
+    });
+
+    viewport.addEventListener("pointerenter", function (event) {
+      if (event.pointerType === "mouse") {
+        hovering = true;
+        refresh();
+      }
+    });
+
+    viewport.addEventListener("pointerleave", function (event) {
+      if (event.pointerType === "mouse") {
+        hovering = false;
+        refresh();
+      }
+    });
+
+    viewport.addEventListener("pointerdown", function (event) {
+      startX = event.clientX;
+    });
+
+    viewport.addEventListener("pointerup", function (event) {
+      if (startX === null) {
+        return;
+      }
+      const dx = event.clientX - startX;
+      startX = null;
+
+      if (Math.abs(dx) > 50) {
+        show(dx < 0 ? current + 1 : current - 1);
+      }
+    });
+
+    viewport.addEventListener("pointercancel", function () {
+      startX = null;
+    });
+
+    sliderEl.addEventListener("focusin", function (event) {
+      focusedInside = event.target.matches(":focus-visible");
+      refresh();
+    });
+
+    sliderEl.addEventListener("focusout", function () {
+      focusedInside = false;
+      refresh();
+    });
+
+    document.addEventListener("visibilitychange", refresh);
+
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(
+        function (entries) {
+          inView = entries[0].isIntersecting;
+          refresh();
+        },
+        { threshold: 0.25 },
+      ).observe(sliderEl);
+    }
+
+    show(0);
+  }
+
+  const khmer = {
+    nav_home: "ទំព័រដើម",
+    nav_about: "អំពីខ្ញុំ",
+    nav_skills: "ជំនាញ",
+    nav_projects: "គម្រោង",
+    nav_gallery: "វិចិត្រសាល",
+    nav_contact: "ទំនាក់ទំនង",
+    hero_hello: "សួស្តី ខ្ញុំគឺ",
+    hero_desc:
+      "អ្នកអភិវឌ្ឍន៍ Full Stack កម្រិតចាប់ផ្តើមនៅ TechStore Creative Solutions ដែលមានបទពិសោធន៍ជិត ៣ ឆ្នាំក្នុងការបង្កើតកម្មវិធីវេបដោយប្រើកូដស្អាត ការរចនាប្រកបដោយការគិតគូរ និងដំណោះស្រាយជាក់ស្តែង។",
+    btn_projects: "មើលគម្រោងរបស់ខ្ញុំ",
+    btn_contact: "ទាក់ទងខ្ញុំ",
+    btn_cv: "ទាញយក CV",
+    about_eyebrow: "ស្គាល់ខ្ញុំបន្ថែម",
+    about_title: "អំពីខ្ញុំ",
+    about_h3:
+      "ខ្ញុំគឺ Tol Bovireak អ្នកអភិវឌ្ឍន៍ Full Stack កម្រិតចាប់ផ្តើម ដែលចូលចិត្តបង្កើតអ្វីៗសម្រាប់គេហទំព័រ។",
+    about_p1:
+      "ខ្ញុំធ្វើការនៅ TechStore Creative Solutions ជាកន្លែងដែលក្រុមរបស់ខ្ញុំ និងខ្ញុំបង្កើតប្រព័ន្ធ ERP សម្រាប់សាលា និងកម្មវិធីវេបផ្សេងៗ។ ខ្ញុំមានបទពិសោធន៍ជាក់ស្តែងជិត ៣ ឆ្នាំលើផ្នែក Frontend, Backend និងមូលដ្ឋានទិន្នន័យ។",
+    about_p2:
+      "ខ្ញុំធ្វើការជាចម្បងជាមួយ PHP, Laravel, Vue.js, JavaScript, TypeScript និង PostgreSQL ហើយប្រើ Docker និង Linux សម្រាប់គ្រប់គ្រងបរិស្ថានអភិវឌ្ឍន៍។ ខ្ញុំតែងតែរៀនសូត្រ និងស្វែងរកវិធីសរសេរកម្មវិធីឱ្យកាន់តែប្រសើរ។",
+    fact_role: "តួនាទី",
+    fact_role_val: "អ្នកអភិវឌ្ឍន៍ Full Stack (Junior)",
+    fact_company: "ក្រុមហ៊ុន",
+    fact_exp: "បទពិសោធន៍",
+    fact_exp_val: "ជិត ៣ ឆ្នាំ",
+    fact_exp_dates: "២០២៣ – ២០២៦",
+    detail_fe: "ការអភិវឌ្ឍ Frontend",
+    detail_fe_d: "បង្កើតចំណុចប្រទាក់ដែលសមស្របគ្រប់អេក្រង់ និងងាយស្រួលប្រើ។",
+    detail_be: "ការអភិវឌ្ឍ Backend",
+    detail_be_d: "អភិវឌ្ឍតក្កវិជ្ជាកម្មវិធី និង API។",
+    detail_db: "ការគ្រប់គ្រងមូលដ្ឋានទិន្នន័យ",
+    detail_db_d: "ធ្វើការជាមួយមូលដ្ឋានទិន្នន័យ relational និងទិន្នន័យ។",
+    detail_env: "បរិស្ថានអភិវឌ្ឍន៍",
+    detail_env_d: "ប្រើ Linux, Docker និង Git ក្នុងការអភិវឌ្ឍ។",
+    skills_eyebrow: "ជំនាញរបស់ខ្ញុំ",
+    skills_title: "ជំនាញបច្ចេកទេស",
+    skills_desc:
+      "បច្ចេកវិទ្យា និងឧបករណ៍ដែលខ្ញុំប្រើដើម្បីបង្កើត និងថែទាំកម្មវិធីវេប។",
+    skill_db: "មូលដ្ឋានទិន្នន័យ",
+    skill_tools: "ឧបករណ៍ និងបរិស្ថាន",
+    proj_eyebrow: "ស្នាដៃរបស់ខ្ញុំ",
+    proj_title: "គម្រោងលេចធ្លោ",
+    proj_desc:
+      "នេះជាគម្រោងមួយចំនួនដែលខ្ញុំបានធ្វើ។ គម្រោងបន្ថែមនឹងត្រូវបន្ថែមក្នុងពេលឆាប់ៗ។",
+    proj_school: "ប្រព័ន្ធ ERP សម្រាប់សាលា",
+    proj_school_d:
+      "ប្រព័ន្ធពេញលេញសម្រាប់គ្រប់គ្រងសិស្ស គ្រូ ថ្នាក់ និងពិន្ទុ បង្កើតជាមួយក្រុមរបស់យើងនៅ TechStore។",
+    proj_school_b: "មើលសាលា",
+    proj_pos: "ប្រព័ន្ធ POS",
+    proj_pos_d:
+      "ប្រព័ន្ធលក់ POS លើ Cloud ដែលសម្របសម្រាប់អាជីវកម្មច្រើនប្រភេទ បង្កើតជាមួយក្រុមរបស់យើងនៅ TechStore។",
+    proj_pos_b: "មើលគម្រោង",
+    proj_loan: "ប្រព័ន្ធគ្រប់គ្រងកម្ចី",
+    proj_loan_d:
+      "ប្លាតហ្វមសម្រាប់គ្រប់គ្រងកម្ចី កាលវិភាគសងប្រាក់ និងកំណត់ត្រាអតិថិជន បង្កើតជាមួយក្រុមរបស់យើងនៅ TechStore។",
+    proj_loan_b: "មើលប្រព័ន្ធ",
+    gal_eyebrow: "លើសពីកូដ",
+    gal_title: "ជីវិតនៅ TechStore",
+    gal_desc:
+      "ពេលវេលាជាមួយក្រុម TechStore ចាប់ពីដំណើរកម្សាន្ត ពិធីបុណ្យ រហូតដល់ការធ្វើការជាក្រុមប្រចាំថ្ងៃ។",
+    contact_eyebrow: "ទាក់ទងមក",
+    contact_title: "មកធ្វើការជាមួយគ្នា",
+    contact_desc: "មានគម្រោង ឬឱកាសអ្វីមួយក្នុងចិត្តទេ? សូមទាក់ទងមកបានតាមចិត្ត។",
+    contact_mail: "ឬផ្ញើអ៊ីមែលមកខ្ញុំដោយផ្ទាល់",
+    form_name: "ឈ្មោះ",
+    form_email: "អ៊ីមែល",
+    form_message: "សាររបស់អ្នក",
+    form_send: "ផ្ញើសារ",
+  };
+
+  const statusText = {
+    sending: { en: "Sending...", km: "កំពុងផ្ញើ..." },
+    success: {
+      en: "Thanks! Your message has been sent.",
+      km: "អរគុណ! សារបស់អ្នកត្រូវបានផ្ញើហើយ។",
+    },
+    error: {
+      en: "Something went wrong. Please try again or email me directly.",
+      km: "មានបញ្ហាកើតឡើង។ សូមព្យាយាមម្តងទៀត ឬផ្ញើអ៊ីមែលមកខ្ញុំដោយផ្ទាល់។",
+    },
+  };
+
+  const contactForm = document.getElementById("contact-form");
+  const formStatus = document.getElementById("form-status");
+  let statusKey = null;
+
+  function renderStatus() {
+    if (!formStatus) {
+      return;
+    }
+
+    if (!statusKey) {
+      formStatus.textContent = "";
+      formStatus.className = "form-status";
+      return;
+    }
+
+    formStatus.textContent = statusText[statusKey][lang];
+    formStatus.className = "form-status " + statusKey;
+  }
+
+  if (contactForm) {
+    contactForm.addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      if (!contactForm.checkValidity()) {
+        contactForm.reportValidity();
+        return;
+      }
+
+      const data = new FormData(contactForm);
+
+      if (data.get("_gotcha")) {
+        return;
+      }
+
+      const action = contactForm.getAttribute("action");
+
+      if (action.indexOf("YOUR_FORM_ID") !== -1) {
+        const subject = encodeURIComponent(
+          "Portfolio message from " + data.get("name"),
+        );
+        const body = encodeURIComponent(
+          data.get("message") +
+            "\n\n" +
+            data.get("name") +
+            " (" +
+            data.get("email") +
+            ")",
+        );
+        window.location.href =
+          "mailto:" +
+          contactForm.getAttribute("data-fallback") +
+          "?subject=" +
+          subject +
+          "&body=" +
+          body;
+        return;
+      }
+
+      const submitBtn = contactForm.querySelector('button[type="submit"]');
+      submitBtn.disabled = true;
+      statusKey = "sending";
+      renderStatus();
+
+      fetch(action, {
+        method: "POST",
+        body: data,
+        headers: { Accept: "application/json" },
+      })
+        .then(function (response) {
+          if (response.ok) {
+            contactForm.reset();
+            statusKey = "success";
+          } else {
+            statusKey = "error";
+          }
+        })
+        .catch(function () {
+          statusKey = "error";
+        })
+        .finally(function () {
+          submitBtn.disabled = false;
+          renderStatus();
+        });
+    });
+  }
+
+  const i18nEls = Array.from(document.querySelectorAll("[data-i18n]"));
+  const langToggle = document.getElementById("lang-toggle");
+
+  i18nEls.forEach(function (el) {
+    el.setAttribute("data-en", el.textContent.replace(/\s+/g, " ").trim());
+  });
+
+  function applyLang(next) {
+    lang = next;
+    root.setAttribute("lang", next);
+
+    i18nEls.forEach(function (el) {
+      const key = el.getAttribute("data-i18n");
+      el.textContent =
+        next === "km" && khmer[key] ? khmer[key] : el.getAttribute("data-en");
+    });
+
+    if (langToggle) {
+      langToggle.textContent = next === "km" ? "EN" : "ខ្មែរ";
+      langToggle.setAttribute(
+        "aria-label",
+        next === "km" ? "Switch to English" : "ប្តូរទៅភាសាខ្មែរ",
+      );
+    }
+
+    if (next === "km") {
+      stopTyping(khmerRole);
+    } else {
+      startTyping();
+    }
+
+    langHooks.forEach(function (hook) {
+      hook();
+    });
+
+    renderStatus();
+
+    try {
+      localStorage.setItem("lang", next);
+    } catch (e) {}
+  }
+
+  if (langToggle) {
+    langToggle.addEventListener("click", function () {
+      applyLang(lang === "km" ? "en" : "km");
+    });
+  }
+
+  let savedLang = null;
+
+  try {
+    savedLang = localStorage.getItem("lang");
+  } catch (e) {}
+
+  if (!savedLang) {
+    savedLang =
+      (navigator.language || "").toLowerCase().indexOf("km") === 0
+        ? "km"
+        : "en";
+  }
+
+  applyLang(savedLang === "km" ? "km" : "en");
 });
