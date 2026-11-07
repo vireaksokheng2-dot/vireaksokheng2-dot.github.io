@@ -59,6 +59,7 @@ document.addEventListener("DOMContentLoaded", function () {
     "(prefers-reduced-motion: reduce)",
   ).matches;
   const langHooks = [];
+  const modalApi = {};
   let lang = "en";
 
   const roles = [
@@ -387,7 +388,9 @@ document.addEventListener("DOMContentLoaded", function () {
       document.body.classList.add("modal-open");
       projectModal.querySelector(".modal-panel").scrollTop = 0;
       if (modalClose) {
-        modalClose.focus();
+        setTimeout(function () {
+          modalClose.focus();
+        }, 50);
       }
     }
 
@@ -400,6 +403,9 @@ document.addEventListener("DOMContentLoaded", function () {
         lastFocused.focus();
       }
     }
+
+    modalApi.open = openModal;
+    modalApi.close = closeModal;
 
     langHooks.push(function () {
       if (openKey) {
@@ -747,6 +753,12 @@ document.addEventListener("DOMContentLoaded", function () {
     form_email: "អ៊ីមែល",
     form_message: "សាររបស់អ្នក",
     form_send: "ផ្ញើសារ",
+    status_open: "ទទួលឱកាសការងារ",
+    status_city: "ភ្នំពេញ",
+    stat_schools: "សាលាដែលបានបម្រើ",
+    stat_pos: "គម្រោង POS",
+    stat_loans: "ប្រព័ន្ធកម្ចី",
+    stat_years: "ឆ្នាំនៃបទពិសោធន៍",
   };
 
   const statusText = {
@@ -909,4 +921,483 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   applyLang(savedLang === "km" ? "km" : "en");
+
+  const timeEl = document.getElementById("local-time");
+
+  function updateTime() {
+    if (!timeEl) {
+      return;
+    }
+
+    try {
+      timeEl.textContent = new Intl.DateTimeFormat("en-US", {
+        timeZone: "Asia/Phnom_Penh",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      }).format(new Date());
+    } catch (e) {
+      timeEl.textContent = "";
+    }
+  }
+
+  updateTime();
+  setInterval(updateTime, 30000);
+
+  const statTotals = {
+    schools: modalData.schools.items.length,
+    pos: modalData.pos.items.length,
+    loans: modalData.loans.items.length,
+  };
+
+  function formatStat(el, value) {
+    el.textContent = (el.getAttribute("data-prefix") || "") + value;
+  }
+
+  function countUp(el, target) {
+    const start = performance.now();
+    const duration = 1400;
+
+    function frame(now) {
+      const progress = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      formatStat(el, Math.round(target * eased));
+
+      if (progress < 1) {
+        requestAnimationFrame(frame);
+      }
+    }
+
+    requestAnimationFrame(frame);
+  }
+
+  const statObserver =
+    "IntersectionObserver" in window && !reduceMotion
+      ? new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (entry) {
+              if (entry.isIntersecting) {
+                countUp(
+                  entry.target,
+                  Number(entry.target.getAttribute("data-target")),
+                );
+                statObserver.unobserve(entry.target);
+              }
+            });
+          },
+          { threshold: 0.4 },
+        )
+      : null;
+
+  document.querySelectorAll(".stat-num").forEach(function (el) {
+    const source = el.getAttribute("data-source");
+    const target = source
+      ? statTotals[source]
+      : Number(el.getAttribute("data-count"));
+
+    el.setAttribute("data-target", target);
+
+    if (statObserver) {
+      formatStat(el, 0);
+      statObserver.observe(el);
+    } else {
+      formatStat(el, target);
+    }
+  });
+
+  const progressBar = document.getElementById("scroll-progress");
+  const toTop = document.getElementById("to-top");
+  let scrollTicking = false;
+
+  function onScrollFrame() {
+    const doc = document.documentElement;
+    const max = doc.scrollHeight - doc.clientHeight;
+    const ratio = max > 0 ? window.scrollY / max : 0;
+
+    if (progressBar) {
+      progressBar.style.transform = "scaleX(" + ratio + ")";
+    }
+
+    if (toTop) {
+      toTop.classList.toggle("visible", window.scrollY > 600);
+    }
+
+    scrollTicking = false;
+  }
+
+  window.addEventListener(
+    "scroll",
+    function () {
+      if (!scrollTicking) {
+        scrollTicking = true;
+        requestAnimationFrame(onScrollFrame);
+      }
+    },
+    { passive: true },
+  );
+
+  if (toTop) {
+    toTop.addEventListener("click", function () {
+      window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
+    });
+  }
+
+  onScrollFrame();
+
+  const palette = document.getElementById("palette");
+  const paletteInput = document.getElementById("palette-input");
+  const paletteList = document.getElementById("palette-list");
+  const paletteHint = document.getElementById("palette-hint");
+  const cmdTrigger = document.getElementById("cmd-trigger");
+  const cmdKey = document.getElementById("cmd-key");
+  const themeBtn = document.getElementById("theme-toggle");
+
+  const paletteText = {
+    placeholder: {
+      en: "Type a command or search…",
+      km: "វាយពាក្យបញ្ជា ឬស្វែងរក…",
+    },
+    empty: { en: "No results found", km: "រកមិនឃើញលទ្ធផល" },
+    hint: {
+      en: "↑↓ to navigate · Enter to select · Esc to close",
+      km: "↑↓ ដើម្បីរើស · Enter ដើម្បីជ្រើស · Esc ដើម្បីបិទ",
+    },
+    groups: {
+      go: { en: "Go to", km: "ទៅកាន់" },
+      projects: { en: "Projects", km: "គម្រោង" },
+      actions: { en: "Actions", km: "សកម្មភាព" },
+      schools: { en: "Schools", km: "សាលា" },
+      pos: { en: "POS projects", km: "គម្រោង POS" },
+      loans: { en: "Loan systems", km: "ប្រព័ន្ធកម្ចី" },
+    },
+  };
+
+  let paletteOpen = false;
+  let paletteReturnFocus = null;
+  let paletteVisible = [];
+  let paletteActive = 0;
+
+  function goTo(id) {
+    const target = document.getElementById(id);
+
+    if (target) {
+      target.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" });
+    }
+  }
+
+  function openLink(selector) {
+    const link = document.querySelector(selector);
+
+    if (link) {
+      window.open(link.href, "_blank", "noopener");
+    }
+  }
+
+  function highlightCard(name) {
+    const cards = modalGrid.querySelectorAll(".school-card");
+
+    cards.forEach(function (card) {
+      const title = card.querySelector("h4");
+
+      if (title && title.textContent === name) {
+        card.classList.add("flash");
+        card.scrollIntoView({ block: "center" });
+      }
+    });
+  }
+
+  function buildCommands(query) {
+    const list = [];
+
+    [
+      ["home", "Home", khmer.nav_home],
+      ["about", "About", khmer.nav_about],
+      ["skills", "Skills", khmer.nav_skills],
+      ["projects", "Projects", khmer.nav_projects],
+      ["gallery", "Gallery", khmer.nav_gallery],
+      ["contact", "Contact", khmer.nav_contact],
+    ].forEach(function (entry) {
+      list.push({
+        group: "go",
+        en: entry[1],
+        km: entry[2],
+        run: function () {
+          goTo(entry[0]);
+        },
+      });
+    });
+
+    [
+      ["schools", "School ERP System", khmer.proj_school],
+      ["pos", "POS System", khmer.proj_pos],
+      ["loans", "Loan Management System", khmer.proj_loan],
+    ].forEach(function (entry) {
+      list.push({
+        group: "projects",
+        en: entry[1],
+        km: entry[2],
+        run: function () {
+          modalApi.open(entry[0]);
+        },
+      });
+    });
+
+    list.push(
+      {
+        group: "actions",
+        en: "Toggle dark mode",
+        km: "ប្តូរម៉ូដងងឹត",
+        run: function () {
+          themeBtn.click();
+        },
+      },
+      {
+        group: "actions",
+        en: "Switch language",
+        km: "ប្តូរភាសា",
+        run: function () {
+          langToggle.click();
+        },
+      },
+      {
+        group: "actions",
+        en: "Download CV",
+        km: khmer.btn_cv,
+        run: function () {
+          const link = document.createElement("a");
+          link.href = "assets/Tol-Bovireak-CV.pdf";
+          link.download = "";
+          link.click();
+        },
+      },
+      {
+        group: "actions",
+        en: "Send me an email",
+        km: "ផ្ញើអ៊ីមែលមកខ្ញុំ",
+        run: function () {
+          window.location.href =
+            "mailto:" + contactForm.getAttribute("data-fallback");
+        },
+      },
+      {
+        group: "actions",
+        en: "Open GitHub",
+        km: "បើក GitHub",
+        run: function () {
+          openLink('.hero-socials a[aria-label="GitHub"]');
+        },
+      },
+      {
+        group: "actions",
+        en: "Open LinkedIn",
+        km: "បើក LinkedIn",
+        run: function () {
+          openLink('.hero-socials a[aria-label="LinkedIn"]');
+        },
+      },
+    );
+
+    if (query) {
+      Object.keys(modalData).forEach(function (key) {
+        modalData[key].items.forEach(function (item) {
+          list.push({
+            group: key,
+            en: item.name,
+            km: item.name,
+            run: function () {
+              modalApi.open(key);
+              highlightCard(item.name);
+            },
+          });
+        });
+      });
+    }
+
+    const q = query.trim().toLowerCase();
+
+    return list.filter(function (cmd) {
+      return !q || (cmd.en + " " + cmd.km).toLowerCase().indexOf(q) !== -1;
+    });
+  }
+
+  function renderPalette() {
+    const query = paletteInput.value;
+    paletteVisible = buildCommands(query);
+    paletteActive = Math.min(
+      paletteActive,
+      Math.max(paletteVisible.length - 1, 0),
+    );
+    paletteList.textContent = "";
+    paletteInput.setAttribute("placeholder", paletteText.placeholder[lang]);
+    paletteHint.textContent = paletteText.hint[lang];
+
+    if (!paletteVisible.length) {
+      const empty = document.createElement("li");
+      empty.className = "palette-empty";
+      empty.textContent = paletteText.empty[lang];
+      paletteList.appendChild(empty);
+      paletteInput.removeAttribute("aria-activedescendant");
+      return;
+    }
+
+    let lastGroup = "";
+
+    paletteVisible.forEach(function (cmd, i) {
+      if (cmd.group !== lastGroup) {
+        lastGroup = cmd.group;
+        const heading = document.createElement("li");
+        heading.className = "palette-group";
+        heading.setAttribute("role", "presentation");
+        heading.textContent = paletteText.groups[cmd.group][lang];
+        paletteList.appendChild(heading);
+      }
+
+      const row = document.createElement("li");
+      row.id = "palette-opt-" + i;
+      row.className = "palette-item" + (i === paletteActive ? " active" : "");
+      row.setAttribute("role", "option");
+      row.setAttribute("aria-selected", String(i === paletteActive));
+      row.textContent = lang === "km" ? cmd.km : cmd.en;
+
+      row.addEventListener("mousemove", function () {
+        if (paletteActive !== i) {
+          setActive(i);
+        }
+      });
+
+      row.addEventListener("click", function () {
+        runCommand(i);
+      });
+
+      paletteList.appendChild(row);
+    });
+
+    paletteInput.setAttribute(
+      "aria-activedescendant",
+      "palette-opt-" + paletteActive,
+    );
+  }
+
+  function setActive(index) {
+    const rows = paletteList.querySelectorAll(".palette-item");
+
+    if (!rows.length) {
+      return;
+    }
+
+    paletteActive = (index + rows.length) % rows.length;
+
+    rows.forEach(function (row, i) {
+      row.classList.toggle("active", i === paletteActive);
+      row.setAttribute("aria-selected", String(i === paletteActive));
+    });
+
+    rows[paletteActive].scrollIntoView({ block: "nearest" });
+    paletteInput.setAttribute(
+      "aria-activedescendant",
+      "palette-opt-" + paletteActive,
+    );
+  }
+
+  function openPalette() {
+    if (!palette || paletteOpen) {
+      return;
+    }
+
+    if (projectModal.classList.contains("open")) {
+      modalApi.close();
+    }
+
+    paletteReturnFocus = document.activeElement;
+    paletteOpen = true;
+    paletteInput.value = "";
+    paletteActive = 0;
+    renderPalette();
+    palette.classList.add("open");
+    palette.setAttribute("aria-hidden", "false");
+    document.body.classList.add("modal-open");
+    setTimeout(function () {
+      paletteInput.focus();
+    }, 50);
+  }
+
+  function closePalette() {
+    if (!paletteOpen) {
+      return;
+    }
+
+    paletteOpen = false;
+    palette.classList.remove("open");
+    palette.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("modal-open");
+
+    if (paletteReturnFocus) {
+      paletteReturnFocus.focus();
+    }
+  }
+
+  function runCommand(index) {
+    const cmd = paletteVisible[index];
+
+    if (!cmd) {
+      return;
+    }
+
+    closePalette();
+    setTimeout(cmd.run, 60);
+  }
+
+  if (palette && paletteInput) {
+    if (cmdKey && /Mac|iPhone|iPad/.test(navigator.platform)) {
+      cmdKey.textContent = "⌘ K";
+    }
+
+    if (cmdTrigger) {
+      cmdTrigger.addEventListener("click", openPalette);
+    }
+
+    paletteInput.addEventListener("input", function () {
+      paletteActive = 0;
+      renderPalette();
+    });
+
+    paletteInput.addEventListener("keydown", function (event) {
+      if (event.key === "ArrowDown") {
+        event.preventDefault();
+        setActive(paletteActive + 1);
+      } else if (event.key === "ArrowUp") {
+        event.preventDefault();
+        setActive(paletteActive - 1);
+      } else if (event.key === "Enter") {
+        event.preventDefault();
+        runCommand(paletteActive);
+      }
+    });
+
+    palette.addEventListener("click", function (event) {
+      if (event.target === palette) {
+        closePalette();
+      }
+    });
+
+    document.addEventListener("keydown", function (event) {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
+        event.preventDefault();
+
+        if (paletteOpen) {
+          closePalette();
+        } else {
+          openPalette();
+        }
+      } else if (event.key === "Escape" && paletteOpen) {
+        closePalette();
+      }
+    });
+
+    langHooks.push(function () {
+      if (paletteOpen) {
+        renderPalette();
+      }
+    });
+  }
 });

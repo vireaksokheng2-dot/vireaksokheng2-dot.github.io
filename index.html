@@ -16,6 +16,45 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=Noto+Sans+Khmer:wght@400;500;600;700&amp;display=swap"
       rel="stylesheet"
     />
+    <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="assets/images/favicon-32.png"
+    />
+    <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png" />
+    <meta name="theme-color" content="#2563eb" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Tol Bovireak" />
+    <meta
+      property="og:title"
+      content="Tol Bovireak | Junior Full Stack Developer"
+    />
+    <meta
+      property="og:description"
+      content="Junior full stack developer at TechStore Creative Solutions. Laravel, Vue.js, TypeScript and PostgreSQL."
+    />
+    <meta property="og:url" content="https://vireaksokheng2-dot.github.io/" />
+    <meta
+      property="og:image"
+      content="https://vireaksokheng2-dot.github.io/assets/images/og-image.png"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="Tol Bovireak | Junior Full Stack Developer"
+    />
+    <meta
+      name="twitter:description"
+      content="Junior full stack developer at TechStore Creative Solutions. Laravel, Vue.js, TypeScript and PostgreSQL."
+    />
+    <meta
+      name="twitter:image"
+      content="https://vireaksokheng2-dot.github.io/assets/images/og-image.png"
+    />
     <link href="style.css" rel="stylesheet" />
   </head>
   <body>
@@ -103,6 +142,14 @@
           <line x1="22" x2="11" y1="2" y2="13"></line>
           <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
         </symbol>
+        <symbol id="i-search" viewBox="0 0 24 24">
+          <circle cx="11" cy="11" r="8" />
+          <line x1="21" y1="21" x2="16.65" y2="16.65" />
+        </symbol>
+        <symbol id="i-arrow-up" viewBox="0 0 24 24">
+          <line x1="12" y1="19" x2="12" y2="5" />
+          <polyline points="5 12 12 5 19 12" />
+        </symbol>
       </defs>
     </svg>
     <header class="header">
@@ -138,6 +185,15 @@
         </ul>
         <div class="nav-actions">
           <button
+            type="button"
+            class="cmd-trigger"
+            id="cmd-trigger"
+            aria-label="Open command menu"
+          >
+            <svg class="icon"><use href="#i-search" /></svg>
+            <kbd id="cmd-key">Ctrl K</kbd>
+          </button>
+          <button
             aria-label="Switch language"
             class="lang-toggle"
             id="lang-toggle"
@@ -171,6 +227,15 @@
       <section class="hero" id="home">
         <div class="container hero-container">
           <div class="hero-content">
+            <div class="status-pill">
+              <span class="status-dot" aria-hidden="true"></span>
+              <span data-i18n="status_open">Open to opportunities</span>
+              <span class="status-sep" aria-hidden="true">·</span>
+              <span class="status-time"
+                ><span data-i18n="status_city">Phnom Penh</span>
+                <time id="local-time"></time
+              ></span>
+            </div>
             <p class="eyebrow" data-i18n="hero_hello">HELLO, I'M</p>
             <h1>Tol Bovireak</h1>
             <h2>
@@ -224,7 +289,7 @@
             <div class="hero-blob"></div>
             <img
               alt="Tol Bovireak - Full Stack Developer"
-              src="assets/Confident Professional Portrait.png"
+              src="assets/images/profile.jpg"
             />
             <span class="float-badge fb-1">Laravel</span>
             <span class="float-badge fb-2">Vue.js</span>
@@ -233,6 +298,27 @@
           </div>
         </div>
       </section>
+      <section class="stats" aria-label="Highlights">
+        <div class="container stats-grid">
+          <div class="stat">
+            <strong class="stat-num" data-source="schools">13</strong>
+            <span data-i18n="stat_schools">Schools served</span>
+          </div>
+          <div class="stat">
+            <strong class="stat-num" data-source="pos">17</strong>
+            <span data-i18n="stat_pos">POS projects</span>
+          </div>
+          <div class="stat">
+            <strong class="stat-num" data-source="loans">3</strong>
+            <span data-i18n="stat_loans">Loan systems</span>
+          </div>
+          <div class="stat">
+            <strong class="stat-num" data-count="3" data-prefix="~">~3</strong>
+            <span data-i18n="stat_years">Years of experience</span>
+          </div>
+        </div>
+      </section>
+
       <section class="section" id="about">
         <div class="container about-grid">
           <div class="about-text">
@@ -581,7 +667,7 @@
             </div>
           </div>
           <form
-            action="https://formspree.io/f/xjyyzkpp"
+            action="https://formspree.io/f/YOUR_FORM_ID"
             class="contact-form"
             data-fallback="vieaksokheng2@gmail.com"
             id="contact-form"
@@ -683,6 +769,38 @@
         <div class="schools-grid" id="modal-grid"></div>
       </div>
     </div>
+    <div class="scroll-progress" id="scroll-progress" aria-hidden="true"></div>
+
+    <button type="button" class="to-top" id="to-top" aria-label="Back to top">
+      <svg class="icon"><use href="#i-arrow-up" /></svg>
+    </button>
+
+    <div
+      class="palette"
+      id="palette"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Command menu"
+      aria-hidden="true"
+    >
+      <div class="palette-panel">
+        <div class="palette-search">
+          <svg class="icon"><use href="#i-search" /></svg>
+          <input
+            id="palette-input"
+            type="text"
+            autocomplete="off"
+            spellcheck="false"
+            aria-controls="palette-list"
+            aria-label="Search commands"
+          />
+          <kbd>Esc</kbd>
+        </div>
+        <ul class="palette-list" id="palette-list" role="listbox"></ul>
+        <div class="palette-hint" id="palette-hint"></div>
+      </div>
+    </div>
+
     <script src="script.js"></script>
   </body>
 </html>
