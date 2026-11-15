@@ -1190,7 +1190,7 @@ document.addEventListener("DOMContentLoaded", function () {
       ["skills", "Skills", khmer.nav_skills],
       ["experience", "Experience", khmer.nav_experience],
       ["projects", "Projects", khmer.nav_projects],
-      ["gallery", "Gallery", khmer.nav_gallery],
+      // ["gallery", "Gallery", khmer.nav_gallery], // gallery disabled
       ["contact", "Contact", khmer.nav_contact],
     ].forEach(function (entry) {
       list.push({

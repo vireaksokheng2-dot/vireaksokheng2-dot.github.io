@@ -600,7 +600,7 @@
       "experience",
       "projects",
       "github",
-      "gallery",
+      // "gallery", // gallery disabled
       "contact",
     ];
 
