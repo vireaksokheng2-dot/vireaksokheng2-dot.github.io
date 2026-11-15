@@ -690,6 +690,12 @@ document.addEventListener("DOMContentLoaded", function () {
     nav_skills: "ជំនាញ",
     nav_projects: "គម្រោង",
     nav_experience: "បទពិសោធន៍",
+    skills_hint: "ណែនាំ៖ ចុចលើជំនាញមួយ ដើម្បីមើលកន្លែងដែលខ្ញុំបានប្រើវា។",
+    gh_eyebrow: "កូដបើកចំហ",
+    gh_title: "សកម្មភាព GitHub",
+    gh_desc: "ទស្សនាផ្ទាល់នៃ repository សាធារណៈ និងសកម្មភាពចុងក្រោយរបស់ខ្ញុំ។",
+    gh_cta: "មើលប្រវត្តិរូបនៅលើ GitHub",
+    footer_terminal: "Terminal",
     skip_link: "រំលងទៅមាតិកា",
     exp_eyebrow: "ដំណើររបស់ខ្ញុំ",
     exp_title: "បទពិសោធន៍ការងារ",
@@ -1266,6 +1272,10 @@ document.addEventListener("DOMContentLoaded", function () {
         },
       },
     );
+
+    (window.portfolioCommands || []).forEach(function (cmd) {
+      list.push(cmd);
+    });
 
     if (query) {
       Object.keys(modalData).forEach(function (key) {

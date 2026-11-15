@@ -481,6 +481,9 @@
               applications.
             </p>
           </div>
+          <p class="skills-hint" data-i18n="skills_hint">
+            Tip: click a skill to see where I've used it.
+          </p>
           <div class="skills-grid">
             <div class="skill-card">
               <div class="skill-head">
@@ -527,6 +530,7 @@
               </div>
             </div>
           </div>
+          <p class="skill-status" id="skill-status" aria-live="polite"></p>
         </div>
       </section>
       <section class="section" id="experience">
@@ -696,7 +700,35 @@
           </div>
         </div>
       </section>
-      <section class="section section-light" id="gallery">
+      <section class="section section-light" id="github">
+        <div class="container">
+          <div class="section-header">
+            <p class="eyebrow" data-i18n="gh_eyebrow">OPEN SOURCE</p>
+            <h2 class="section-title" data-i18n="gh_title">GitHub Activity</h2>
+            <p class="section-description" data-i18n="gh_desc">
+              A live look at my latest public repositories and activity.
+            </p>
+          </div>
+          <div class="gh-summary" id="gh-summary"></div>
+          <div class="gh-activity" id="gh-activity" hidden>
+            <p class="gh-bars-title" id="gh-bars-title"></p>
+            <div class="gh-bars" id="gh-bars" role="img"></div>
+          </div>
+          <div class="gh-repos" id="gh-repos"></div>
+          <p class="gh-status" id="gh-status" aria-live="polite"></p>
+          <div class="gh-cta">
+            <a
+              class="btn btn-outline"
+              href="https://github.com/vireaksokheng2-dot"
+              rel="noopener noreferrer"
+              target="_blank"
+              ><svg class="icon"><use href="#i-github"></use></svg
+              ><span data-i18n="gh_cta">View profile on GitHub</span></a
+            >
+          </div>
+        </div>
+      </section>
+      <section class="section" id="gallery">
         <div class="container">
           <div class="section-header">
             <p class="eyebrow" data-i18n="gal_eyebrow">BEYOND THE CODE</p>
@@ -852,6 +884,10 @@
             >LinkedIn</a
           >
           <a href="mailto:vireaksokheng2@gmail.com">Email</a>
+          <button type="button" class="footer-term" data-open-terminal>
+            <svg class="icon"><use href="#i-terminal"></use></svg>
+            <span data-i18n="footer_terminal">Terminal</span>
+          </button>
         </div>
       </div>
     </footer>
@@ -909,6 +945,49 @@
       </div>
     </div>
 
+    <div
+      class="term"
+      id="terminal"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Terminal"
+      aria-hidden="true"
+    >
+      <div class="term-panel">
+        <div class="term-bar">
+          <span class="term-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="term-title">bovireak@portfolio: ~</span>
+          <button
+            type="button"
+            class="term-close"
+            id="term-close"
+            aria-label="Close terminal"
+          >
+            <svg class="icon"><path d="M18 6L6 18M6 6l12 12"></path></svg>
+          </button>
+        </div>
+        <div class="term-body" id="term-body">
+          <div id="term-log" aria-live="polite"></div>
+          <label class="term-line">
+            <span class="term-prompt" aria-hidden="true">$</span>
+            <input
+              id="term-input"
+              type="text"
+              autocomplete="off"
+              autocapitalize="off"
+              spellcheck="false"
+              aria-label="Terminal command"
+            />
+          </label>
+        </div>
+        <div class="term-hints" id="term-hints" aria-label="Suggested commands"></div>
+        <p class="term-keys" id="term-keys"></p>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
     <script src="script.js"></script>
+    <script src="extras.js"></script>
   </body>
 </html>
