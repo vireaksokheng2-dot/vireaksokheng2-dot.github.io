@@ -129,7 +129,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   const revealTargets = document.querySelectorAll(
-    ".about-text, .about-detail, .section-header, .skill-card, .project-card, .slider, .contact-container",
+    ".about-text, .about-detail, .section-header, .skill-card, .exp-card, .project-card, .slider, .contact-container",
   );
 
   if ("IntersectionObserver" in window && !reduceMotion) {
@@ -689,6 +689,20 @@ document.addEventListener("DOMContentLoaded", function () {
     nav_about: "អំពីខ្ញុំ",
     nav_skills: "ជំនាញ",
     nav_projects: "គម្រោង",
+    nav_experience: "បទពិសោធន៍",
+    skip_link: "រំលងទៅមាតិកា",
+    exp_eyebrow: "ដំណើររបស់ខ្ញុំ",
+    exp_title: "បទពិសោធន៍ការងារ",
+    exp_desc: "កន្លែងដែលខ្ញុំបានអនុវត្តជំនាញរបស់ខ្ញុំ។",
+    exp_role: "អ្នកអភិវឌ្ឍន៍ Full Stack (Junior)",
+    exp_dates: "២០២៣ – ២០២៦",
+    exp_b1:
+      "បង្កើត និងថែទាំប្រព័ន្ធ ERP សម្រាប់សាលា ដែលគ្រប់គ្រងសិស្ស គ្រូ ថ្នាក់ និងពិន្ទុ។",
+    exp_b2:
+      "ផ្តល់ជូនប្រព័ន្ធ POS លើ Cloud ដែលសម្របតាមអាជីវកម្មផ្សេងៗគ្នា។",
+    exp_b3:
+      "បង្កើតប្លាតហ្វមគ្រប់គ្រងកម្ចី រួមទាំងកាលវិភាគសងប្រាក់ និងកំណត់ត្រាអតិថិជន។",
+    exp_b4: "ធ្វើការជារៀងរាល់ថ្ងៃជាមួយ Laravel, Vue.js, PostgreSQL, Docker និង Linux។",
     nav_gallery: "វិចិត្រសាល",
     nav_contact: "ទំនាក់ទំនង",
     hero_hello: "សួស្តី ខ្ញុំគឺ",
@@ -1044,6 +1058,61 @@ document.addEventListener("DOMContentLoaded", function () {
 
   onScrollFrame();
 
+  document.addEventListener(
+    "pointermove",
+    function (event) {
+      const card = event.target.closest
+        ? event.target.closest(".skill-card, .project-card, .exp-card")
+        : null;
+
+      if (card) {
+        const rect = card.getBoundingClientRect();
+        card.style.setProperty("--mx", event.clientX - rect.left + "px");
+        card.style.setProperty("--my", event.clientY - rect.top + "px");
+      }
+    },
+    { passive: true },
+  );
+
+  const copyBtn = document.getElementById("copy-mail");
+  const copyLabel = document.getElementById("copy-mail-label");
+  const copyText = {
+    idle: { en: "Copy email", km: "ចម្លងអ៊ីមែល" },
+    done: { en: "Copied!", km: "បានចម្លង!" },
+  };
+  let copyState = "idle";
+  let copyTimer;
+
+  function renderCopy() {
+    if (copyLabel) {
+      copyLabel.textContent = copyText[copyState][lang];
+    }
+  }
+
+  if (copyBtn) {
+    copyBtn.addEventListener("click", function () {
+      const email = contactForm.getAttribute("data-fallback");
+
+      navigator.clipboard
+        .writeText(email)
+        .then(function () {
+          copyState = "done";
+          renderCopy();
+          clearTimeout(copyTimer);
+          copyTimer = setTimeout(function () {
+            copyState = "idle";
+            renderCopy();
+          }, 2000);
+        })
+        .catch(function () {
+          window.location.href = "mailto:" + email;
+        });
+    });
+
+    langHooks.push(renderCopy);
+    renderCopy();
+  }
+
   const palette = document.getElementById("palette");
   const paletteInput = document.getElementById("palette-input");
   const paletteList = document.getElementById("palette-list");
@@ -1113,6 +1182,7 @@ document.addEventListener("DOMContentLoaded", function () {
       ["home", "Home", khmer.nav_home],
       ["about", "About", khmer.nav_about],
       ["skills", "Skills", khmer.nav_skills],
+      ["experience", "Experience", khmer.nav_experience],
       ["projects", "Projects", khmer.nav_projects],
       ["gallery", "Gallery", khmer.nav_gallery],
       ["contact", "Contact", khmer.nav_contact],

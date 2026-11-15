@@ -55,9 +55,42 @@
       name="twitter:image"
       content="https://vireaksokheng2-dot.github.io/assets/images/og-image.png"
     />
+    <link rel="canonical" href="https://vireaksokheng2-dot.github.io/" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Tol Bovireak",
+        "jobTitle": "Junior Full Stack Developer",
+        "url": "https://vireaksokheng2-dot.github.io/",
+        "image": "https://vireaksokheng2-dot.github.io/assets/images/og-image.png",
+        "worksFor": {
+          "@type": "Organization",
+          "name": "TechStore Creative Solutions"
+        },
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Phnom Penh",
+          "addressCountry": "KH"
+        },
+        "knowsAbout": [
+          "Laravel",
+          "Vue.js",
+          "TypeScript",
+          "PostgreSQL",
+          "PHP",
+          "Docker"
+        ],
+        "sameAs": [
+          "https://github.com/vireaksokheng2-dot",
+          "https://www.linkedin.com/in/tol-b-9a7172435/"
+        ]
+      }
+    </script>
     <link href="style.css" rel="stylesheet" />
   </head>
   <body>
+    <a class="skip-link" href="#main" data-i18n="skip_link">Skip to content</a>
     <svg aria-hidden="true" height="0" style="position: absolute" width="0">
       <defs>
         <symbol id="i-github" viewBox="0 0 24 24">
@@ -146,6 +179,10 @@
           <circle cx="11" cy="11" r="8" />
           <line x1="21" y1="21" x2="16.65" y2="16.65" />
         </symbol>
+        <symbol id="i-copy" viewBox="0 0 24 24">
+          <rect height="13" rx="2" width="13" x="9" y="9"></rect>
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+        </symbol>
         <symbol id="i-arrow-up" viewBox="0 0 24 24">
           <line x1="12" y1="19" x2="12" y2="5" />
           <polyline points="5 12 12 5 19 12" />
@@ -166,6 +203,14 @@
           </li>
           <li>
             <a class="nav-link" data-i18n="nav_skills" href="#skills">Skills</a>
+          </li>
+          <li>
+            <a
+              class="nav-link"
+              data-i18n="nav_experience"
+              href="#experience"
+              >Experience</a
+            >
           </li>
           <li>
             <a class="nav-link" data-i18n="nav_projects" href="#projects"
@@ -223,7 +268,7 @@
         </div>
       </nav>
     </header>
-    <main>
+    <main id="main">
       <section class="hero" id="home">
         <div class="container hero-container">
           <div class="hero-content">
@@ -280,7 +325,7 @@
               >
                 <svg class="icon"><use href="#i-linkedin"></use></svg>
               </a>
-              <a aria-label="Email" href="mailto:vieaksokheng2@gmail.com">
+              <a aria-label="Email" href="mailto:vireaksokheng2@gmail.com">
                 <svg class="icon"><use href="#i-mail"></use></svg>
               </a>
             </div>
@@ -467,6 +512,51 @@
                 ><span>Linux</span>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+      <section class="section" id="experience">
+        <div class="container">
+          <div class="section-header">
+            <p class="eyebrow" data-i18n="exp_eyebrow">MY JOURNEY</p>
+            <h2 class="section-title" data-i18n="exp_title">Experience</h2>
+            <p class="section-description" data-i18n="exp_desc">
+              Where I've been putting my skills to work.
+            </p>
+          </div>
+          <div class="timeline">
+            <article class="exp-card">
+              <span class="timeline-dot" aria-hidden="true"></span>
+              <div class="exp-head">
+                <div>
+                  <h3 data-i18n="exp_role">Junior Full Stack Developer</h3>
+                  <p class="exp-company">TechStore Creative Solutions</p>
+                </div>
+                <span class="exp-dates" data-i18n="exp_dates">2023 – 2026</span>
+              </div>
+              <ul class="exp-list">
+                <li data-i18n="exp_b1">
+                  Built and maintained school ERP systems that manage students,
+                  teachers, classes, and scores.
+                </li>
+                <li data-i18n="exp_b2">
+                  Delivered cloud-based POS systems adapted to many different
+                  kinds of businesses.
+                </li>
+                <li data-i18n="exp_b3">
+                  Developed loan management platforms covering repayment
+                  schedules and customer records.
+                </li>
+                <li data-i18n="exp_b4">
+                  Work daily with Laravel, Vue.js, PostgreSQL, Docker, and
+                  Linux.
+                </li>
+              </ul>
+              <div class="tags tags-sm">
+                <span>Laravel</span><span>Vue.js</span><span>PostgreSQL</span
+                ><span>Docker</span><span>Linux</span>
+              </div>
+            </article>
           </div>
         </div>
       </section>
@@ -661,15 +751,19 @@
               <a
                 class="contact-mail"
                 data-i18n="contact_mail"
-                href="mailto:vieaksokheng2@gmail.com"
+                href="mailto:vireaksokheng2@gmail.com"
                 >Or email me directly</a
               >
+              <button class="copy-mail" id="copy-mail" type="button">
+                <svg class="icon"><use href="#i-copy"></use></svg>
+                <span id="copy-mail-label">Copy email</span>
+              </button>
             </div>
           </div>
           <form
             action="https://formspree.io/f/YOUR_FORM_ID"
             class="contact-form"
-            data-fallback="vieaksokheng2@gmail.com"
+            data-fallback="vireaksokheng2@gmail.com"
             id="contact-form"
             method="POST"
             novalidate=""
@@ -743,7 +837,7 @@
             target="_blank"
             >LinkedIn</a
           >
-          <a href="mailto:vieaksokheng2@gmail.com">Email</a>
+          <a href="mailto:vireaksokheng2@gmail.com">Email</a>
         </div>
       </div>
     </footer>
