@@ -332,10 +332,24 @@
           </div>
           <div class="hero-image">
             <div class="hero-blob"></div>
-            <img
-              alt="Tol Bovireak - Full Stack Developer"
-              src="assets/Confident Professional Portrait.png"
-            />
+            <picture>
+              <source
+                type="image/webp"
+                srcset="
+                  assets/images/portrait-480.webp 480w,
+                  assets/images/portrait-640.webp 640w
+                "
+                sizes="320px"
+              />
+              <img
+                alt="Tol Bovireak - Full Stack Developer"
+                src="assets/images/portrait-640.jpg"
+                width="320"
+                height="400"
+                fetchpriority="high"
+                decoding="async"
+              />
+            </picture>
             <span class="float-badge fb-1">Laravel</span>
             <span class="float-badge fb-2">Vue.js</span>
             <span class="float-badge fb-3">TypeScript</span>
